@@ -3,37 +3,76 @@ package com.geisyanne.taskapp.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.geisyanne.taskapp.R
+import com.geisyanne.taskapp.data.db.entity.toTaskEntity
+import com.geisyanne.taskapp.data.db.repository.TaskRepository
+import com.geisyanne.taskapp.data.model.Status
 import com.geisyanne.taskapp.data.model.Task
-import com.geisyanne.taskapp.util.StateView
+import kotlinx.coroutines.launch
 
-class TaskViewModel : ViewModel() {
+class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
-    private val _taskList = MutableLiveData<StateView<List<Task>>>()
-    val taskList: LiveData<StateView<List<Task>>> = _taskList
+    private val _taskStateData = MutableLiveData<StateTask>()
+    val taskStateData: LiveData<StateTask> = _taskStateData
 
-    private val _taskInsert = MutableLiveData<StateView<Task>>()
-    val taskInsert: LiveData<StateView<Task>> = _taskInsert
+    private val _taskStateMessage = MutableLiveData<Int>()
+    val taskStateMessage: LiveData<Int> = _taskStateMessage
 
-    private val _taskUpdate = MutableLiveData<StateView<Task>>()
-    val taskUpdate: LiveData<StateView<Task>> = _taskUpdate
-
-    private val _taskDelete = MutableLiveData<StateView<Task>>()
-    val taskDelete: LiveData<StateView<Task>> = _taskDelete
+    fun insertOrUpdateTask(id: Long = 0, description: String, status: Status) {
+        if (id == 0L) {
+            insertTask(Task(description = description, status = status))
+        } else {
+            updateTask(Task(id, description, status))
+        }
+    }
 
     fun getTasks() {
 
     }
 
-    fun insertTask(task: Task) {
+    fun deleteTask(id: Long) = viewModelScope.launch {
+        try {
+            repository.deleteTask(id)
 
+            _taskStateData.postValue(StateTask.Delete)
+            _taskStateMessage.postValue(R.string.task_delete)
+
+        } catch (ex: Exception) {
+            _taskStateMessage.postValue(R.string.task_delete_error)
+        }
     }
 
-    fun updateTask(task: Task) {
+    private fun insertTask(task: Task) = viewModelScope.launch {
+        try {
+            val id = repository.insertTask(task.toTaskEntity())
 
+            if (id > 0) {
+                _taskStateData.postValue(StateTask.Inserted)
+                _taskStateMessage.postValue(R.string.task_saved)
+            }
+
+        } catch (ex: Exception) {
+            _taskStateMessage.postValue(R.string.task_saved_error)
+        }
     }
 
-    fun deleteTask(task: Task) {
+    private fun updateTask(task: Task) = viewModelScope.launch {
+        try {
+            repository.updateTask(task.toTaskEntity())
 
+            _taskStateData.postValue(StateTask.Updated)
+            _taskStateMessage.postValue(R.string.task_updated)
+
+        } catch (ex: Exception) {
+            _taskStateMessage.postValue(R.string.task_updated_error)
+        }
     }
 
+}
+
+sealed class StateTask {
+    object Inserted : StateTask()
+    object Updated : StateTask()
+    object Delete : StateTask()
 }

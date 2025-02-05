@@ -2,9 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.androidxNavigationSafeArgs)
-    alias(libs.plugins.hiltAndroid)
-    alias(libs.plugins.kspPlugin)
-    id("kotlin-parcelize")
+    id ("kotlin-kapt")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -57,9 +56,14 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
 
     // Test
     testImplementation(libs.junit)

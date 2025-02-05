@@ -4,20 +4,14 @@ agp = "8.8.0"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
 
-# Firebase
-firebaseBom = "33.7.0"
-
 # Navigation
-navVersion = "2.8.5"
+nav = "2.8.6"
 
-# Google Services
-services = "4.4.2"
+# Room
+room = "2.6.1"
 
-# Hilt
-hilt = "2.51.1"
-
-# KSP
-ksp = "2.0.21-1.0.27"
+# Lifecycle
+lifecycle = "2.8.7"
 
 # AndroidX
 appcompat = "1.7.0"
@@ -28,48 +22,40 @@ recyclerview = "1.4.0"
 
 # Test
 junit = "4.13.2"
-junitVersion = "1.2.1"
+junitVe = "1.2.1"
 espressoCore = "3.6.1"
-
 
 [libraries]
 # Core
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-activity = { module = "androidx.activity:activity", version.ref = "activity" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 
 # Navigation
-androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navVersion" }
-androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navVersion" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "nav" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "nav" }
 
-# Firebase
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-auth = { module = "com.google.firebase:firebase-auth" }
-firebase-database = { module = "com.google.firebase:firebase-database" }
-firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx" }
+# Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
-# Hilt
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+# Lifecycle
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 
-# KSP
-ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 
 # Test Libraries
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVe" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 
 # Material Design
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
+material = { module = "com.google.android.material:material", version.ref = "material" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-googleServices = { id = "com.google.gms.google-services", version.ref = "services" }
-androidxNavigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navVersion" }
-hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidxNavigationSafeArgs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "nav" }

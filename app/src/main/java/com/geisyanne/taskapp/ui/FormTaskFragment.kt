@@ -7,9 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.geisyanne.taskapp.R
+import com.geisyanne.taskapp.data.db.AppDatabase
+import com.geisyanne.taskapp.data.db.repository.TaskRepository
 import com.geisyanne.taskapp.data.model.Status
 import com.geisyanne.taskapp.data.model.Task
 import com.geisyanne.taskapp.databinding.FragmentFormTaskBinding
@@ -27,7 +32,21 @@ class FormTaskFragment : BaseFragment() {
 
     private val args: FormTaskFragmentArgs by navArgs()
 
-    private val viewModel: TaskViewModel by activityViewModels()
+    private val viewModel: TaskViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
+
+                    val dataBase = AppDatabase.getDatabase(requireContext())
+                    val repository = TaskRepository(dataBase.taskDao())
+
+                    @Suppress("UNCHECKED_CAST")
+                    return TaskViewModel(repository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,14 +116,13 @@ class FormTaskFragment : BaseFragment() {
             binding.progressFormTask.isVisible = true
 
             if (newTask) task = Task()
-
             task.description = description
             task.status = status
 
             if (newTask) {
-                viewModel.insertTask(task)
+                viewModel.insertOrUpdateTask(description = description, status = status)
             } else {
-                viewModel.updateTask(task)
+                viewModel.insertOrUpdateTask(id = task.id, description = description, status = status)
             }
 
         } else {
@@ -114,24 +132,20 @@ class FormTaskFragment : BaseFragment() {
 
     private fun observeViewModel() {
 
-        viewModel.taskInsert.observe(viewLifecycleOwner) {
-            Toast.makeText(
-                requireContext(),
-                R.string.task_saved,
-                Toast.LENGTH_SHORT
-            ).show()
-
-            findNavController().popBackStack()
+        viewModel.taskStateData.observe(viewLifecycleOwner) { stateTask ->
+            if (stateTask == StateTask.Inserted || stateTask == StateTask.Updated) {
+                findNavController().popBackStack()
+            }
         }
 
-        viewModel.taskUpdate.observe(viewLifecycleOwner) {
+        viewModel.taskStateMessage.observe(viewLifecycleOwner) { message ->
+            binding.progressFormTask.isVisible = false
+
             Toast.makeText(
                 requireContext(),
-                R.string.task_updated,
+                getString(message),
                 Toast.LENGTH_SHORT
             ).show()
-
-            binding.progressFormTask.isVisible = false
         }
     }
 

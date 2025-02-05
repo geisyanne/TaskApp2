@@ -72,6 +72,10 @@
     <string name="task_status_change_doing">A tarefa mudou para o status: Fazendo</string>
     <string name="task_status_change_done">A tarefa mudou para o status: Feita</string>
 
+    <!-- Erro -->
+    <string name="task_saved_error">Erro ao salvar a tarefa</string>
+    <string name="task_updated_error">Erro ao atualizar tarefa</string>
+    <string name="task_delete_error">Erro ao remover tarefa</string>
 
 
 </resources>
